@@ -18,23 +18,24 @@ import org.springframework.context.annotation.Configuration;
 * @version V1.0   
 */
 @Configuration
-@EnableConfigurationProperties(GlobalJWTConfigProperties.class)
+@EnableConfigurationProperties(GlobalJWTConfigProperties.class) //
 /* ConditionalOnProperty:"scorpio.filters.jwt.enabled为true才加载这个类 */
 @ConditionalOnProperty(prefix = "scorpio.filters.jwt", name = "enabled")
 public class GlobalJWTVerifyFilterAutoConfiguration {
 
-    @Autowired
+    @Autowired //必加否则会空指针,与EnableConfigurationProperties配套使用
     private GlobalJWTConfigProperties globalJWTConfigProperties;
 
     /**
      * 注册 登录校验过滤器
-     * @return
      */
     @Bean
     public FilterRegistrationBean globalJWTVerifyGlobalFilterRegistration() {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+
         GlobalJWTVerifyGlobalFilter filter = new GlobalJWTVerifyGlobalFilter();
         filter.setGlobalJWTConfigProperties(globalJWTConfigProperties);
+
         registrationBean.setFilter(filter);
         registrationBean.addUrlPatterns("/*");// /*就可以匹配所有,即使是/say/hello这样的
         registrationBean.setOrder(10);// 值越小，Filter越靠前。
